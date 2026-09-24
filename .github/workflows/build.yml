@@ -15,7 +15,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - uses: android-actions/setup-android@v3
       - run: npm install -g cordova
       - run: |
           mkdir -p www
