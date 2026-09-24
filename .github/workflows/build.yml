@@ -15,28 +15,30 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          packages: 'platform-tools'
-      - name: Install required SDK platform and build-tools
-        run: sdkmanager "platforms;android-33" "build-tools;33.0.2"
-      - uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: 8.5
-      - run: npm install -g cordova
-      - name: Build
-        shell: bash
+      - name: Install Cordova
+        run: npm install -g cordova
+      - name: Create Cordova Project
         run: |
-          mkdir -p www
-          cp chess-obsidian-gold-final.html www/index.html
-          cordova platform add android@12.0.1
+          cordova create build ir.username.chessgame "Chess"
+          cd build
+          cordova platform add android
+      - name: Add Tapsell Plugin
+        run: |
+          cd build
           cordova plugin add tapsell-v3-cordova-plugin
-          cordova build android --debug 2>&1 | tee build.log
-      - name: Show errors
-        if: failure()
-        run: grep -n -A4 -E "error:|What went wrong|Could not|FAILED" build.log | head -60
-      - uses: actions/upload-artifact@v4
+      - name: Copy Game Files
+        run: |
+          rm -rf build/www/*
+          cp index.html build/www/index.html
+          cp manifest.webmanifest build/www/ 2>/dev/null || true
+          cp icon-192.png build/www/ 2>/dev/null || true
+          cp sw.js build/www/ 2>/dev/null || true
+      - name: Build APK
+        run: |
+          cd build
+          cordova build android
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: chess-apk
-          path: platforms/android/app/build/outputs/apk/debug/app-debug.apk
+          path: build/platforms/android/app/build/outputs/apk/**/*.apk
