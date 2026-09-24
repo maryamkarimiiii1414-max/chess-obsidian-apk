@@ -20,6 +20,7 @@ jobs:
           mkdir -p www
           cp chess-obsidian-gold-final.html www/index.html
           cordova platform add android
+          cordova plugin add cordova-plugin-androidx-adapter
           cordova plugin add tapsell-v3-cordova-plugin
           cordova build android --debug
       - uses: actions/upload-artifact@v4
