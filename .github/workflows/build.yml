@@ -16,13 +16,18 @@ jobs:
           distribution: temurin
           java-version: 17
       - run: npm install -g cordova
-      - run: |
+      - name: Build
+        shell: bash
+        run: |
           mkdir -p www
           cp chess-obsidian-gold-final.html www/index.html
           cordova platform add android
           cordova plugin add cordova-plugin-androidx-adapter
           cordova plugin add tapsell-v3-cordova-plugin
-          cordova build android --debug
+          cordova build android --debug 2>&1 | tee build.log
+      - name: Show errors
+        if: failure()
+        run: grep -n -A4 -E "error:|What went wrong|Could not|FAILED" build.log | head -60
       - uses: actions/upload-artifact@v4
         with:
           name: chess-apk
