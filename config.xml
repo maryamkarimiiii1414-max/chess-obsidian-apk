@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.maryam.chess" version="1.0.0" xmlns="http://www.w3.org/ns/widgets">
+    <name>Chess</name>
+    <description>Chess game</description>
+    <author email="you@example.com">Maryam</author>
+    <content src="index.html" />
+    <allow-intent href="*" />
+    <preference name="Orientation" value="portrait" />
+</widget>
